@@ -4,7 +4,11 @@ class User
 
   def initialize(name)
     @name = name
-    @bank = bank
-    @cards = cards
+    @bank = ''
+    @cards = []
+  end
+
+  def show_cards
+    cards
   end
 end

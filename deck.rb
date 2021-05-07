@@ -16,9 +16,8 @@ class Deck
     random_array
   end
 
-  def cards
-    cards = {
-      0 => { card: "\u{1F0A0}", value: 0 }, # рубашка
+  def cards(num_card)
+    cards_sequence = {
       1 => { card: "\u{1F0A1}", value: [1, 11] }, 2 => { card: "\u{1F0B1}", value: [1, 11] }, # туз
       3 => { card: "\u{1F0C1}", value: [1, 11] }, 4 => { card: "\u{1F0D1}", value: [1, 11] }, # туз
       5 => { card: "\u{1F0A2}", value: 2 }, 6 => { card: "\u{1F0B2}", value: 2 }, # 2
@@ -46,11 +45,14 @@ class Deck
       49 => { card: "\u{1F0AE}", value: 10 }, 50 => { card: "\u{1F0BE}", value: 10 }, # король
       51 => { card: "\u{1F0CE}", value: 10 }, 52 => { card: "\u{1F0DE}", value: 10 }, # король
     }
+
+    cards_sequence[num_card]
+  end
+
+  def one_random_card
+    shuffle_arr = self.shuffle
+    Enumerator::Lazy.new(shuffle_arr) do |yielder, val|
+      yielder << self.cards(val)
+    end
   end
 end
-
-pack = Deck.new
-puts pack.shuffle
-
-
-

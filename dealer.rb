@@ -4,7 +4,11 @@ class Dealer
 
   def initialize(name)
     @name = name
-    @bank = bank
-    @cards = cards
+    @bank = ''
+    @cards = []
+  end
+
+  def count_cards
+    "\u{1F0A0}" * cards.each.count
   end
 end
