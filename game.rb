@@ -1,41 +1,51 @@
 class Game
   START_MONEY = 100
+  BET = 10
   NAME_DEALER = 'Наглый крупье'
 
-  @messages = {
-    enter_your_name: 'Введите своё имя: ',
-    continue_game: 'Для продолжения игры введите 1 или 0 что бы выйти: ',
-    warning_continue_game: 'Любое введенное отличное значение от числа расценивается как выход из игры'
-  }
+  def init_player_game(player, deck, central_bank)
+    player.bank = Bank.new(START_MONEY)
+    player.cards << deck.next # сразу выдаем нужные карты игроку, потом диллеру.
+    player.cards << deck.next
 
-  def self.messages(value)
-    @messages[value]
+    central_bank.bet_in_bank(player, BET)
+
+    player
+  end
+
+  def skip
+
   end
 
   def start
+    interface = Interface.new
+    central_bank = Bank.new(0)
+
+    interface.enter_your_name
+
+    name_user = gets.chomp
+    user = Player.new(name_user)
+    dealer = Player.new(NAME_DEALER)
+
     loop do
-      print self.class.messages(:enter_your_name)
-      deck = Deck.new
-      card = deck.one_random_card
+      deck = Deck.new.one_random_card
 
-      name_user = gets.chomp
+      user = init_player_game(user, deck, central_bank)
+      interface.cards_and_count(user)
 
-      user = User.new(name_user)
-      bank_user = Bank.new(START_MONEY)
-      user.bank = bank_user
-      user.cards << card.next
-      user.cards << card.next
-      puts user.cards
+      interface.space
 
-      dealer = Dealer.new(NAME_DEALER)
-      bank_dealer = Bank.new(START_MONEY)
-      dealer.bank = bank_dealer
-      dealer.cards << card.next
-      dealer.cards << card.next
-      puts dealer.count_cards
+      dealer = init_player_game(dealer, deck, central_bank)
+      interface.back_cards(dealer)
 
-      puts self.class.messages(:warning_continue_game)
-      print self.class.messages(:continue_game)
+      interface.space
+
+      interface.options
+      option = gets.chomp
+
+      skip if Interface::SKIP == option.to_i
+
+      interface.continue_game
       break if gets.chomp.to_i.zero?
     end
   end
