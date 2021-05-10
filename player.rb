@@ -1,11 +1,12 @@
 class Player
   POINT_LIMIT = 21
 
-  attr_reader :name
+  attr_reader :name, :type
   attr_accessor :bank, :cards
 
-  def initialize(name)
+  def initialize(name, type)
     @name = name
+    @type = type
     @cards = []
   end
 

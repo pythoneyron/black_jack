@@ -2,15 +2,18 @@ class Game
   START_MONEY = 100
   BET = 10
   MAX_POINTS = 21
-  NAME_DEALER = 'Наглый крупье'
+  NAME_DEALER = 'Наглый крупье'.freeze
+
+  PLAYER = 'player'.freeze
+  DEALER = 'dealer'.freeze
 
   attr_reader :user, :dealer, :deck, :bank
 
   def initialize
     @command_list = {
-      1 => { title: Interface.task(1), command: proc { pass } },
+      1 => { title: Interface.task(1), command: proc { Interface.say(:skip) } },
       2 => { title: Interface.task(2), command: proc { |i| add_card i } },
-      3 => { title: Interface.task(3), command: proc { open_cards } }
+      3 => { title: Interface.task(3), command: proc { Interface.say(:open_cards) } }
     }
   end
 
@@ -40,7 +43,7 @@ class Game
   end
 
   def show_tasks
-    Interface.action
+    Interface.say(:action)
     Interface.list @command_list
   end
 
@@ -54,10 +57,10 @@ class Game
     Interface.enter_your_name
 
     name_user = gets.chomp
-    user = Player.new(name_user)
+    user = Player.new(name_user, PLAYER)
     user.bank = Bank.new(START_MONEY)
 
-    dealer = Player.new(NAME_DEALER)
+    dealer = Player.new(NAME_DEALER, DEALER)
     dealer.bank = Bank.new(START_MONEY)
 
     loop do
@@ -66,12 +69,12 @@ class Game
       @user = init_player_game(user, deck, bank)
       Interface.cards_and_count(user)
 
-      Interface.space
+      Interface.say(:space)
 
       @dealer = init_player_game(dealer, deck, bank)
       Interface.back_cards(dealer)
 
-      Interface.space
+      Interface.say(:space)
 
       loop do
         break if user.cards.length == 3 && dealer.cards.length == 3
@@ -82,40 +85,43 @@ class Game
 
       calculate_result
       break unless Interface.repeat
-
     end
   end
 
   def add_card(player)
-    player.cards << deck.next if player.cards.length < 3
+    if player.cards.length < 3
+      card = deck.next
+      player.cards << card if player.cards.length < 3
+      Interface.added_card(card[:card]) if player.type == PLAYER
+    else
+      Interface.say(:impossible_add)
+    end
   end
 
   def open_cards
     Interface.cards_and_count user
-    Interface.space
+    Interface.say(:space)
     Interface.cards_and_count dealer
-  end
-
-  def open_cards_points
     [user.count_points, dealer.count_points]
   end
 
   def calculate_result
-    user_count, dealer_count = open_cards_points
+    user_count, dealer_count = open_cards
     if user_count > MAX_POINTS
-      Interface.you_lose
+      Interface.say(:you_lose)
       dealer.bank.transaction(20)
     elsif user_count == dealer_count
-      Interface.draw
+      Interface.say(:draw)
       user.bank.transaction(10)
       dealer.bank.transaction(10)
     elsif (user_count > dealer_count) || (dealer_count > MAX_POINTS)
-      Interface.win
+      Interface.say(:win)
       user.bank.transaction(10)
     else
-      Interface.you_lose
+      Interface.say(:you_lose)
       dealer.bank.transaction(20)
     end
+    Interface.balance(user)
   end
 
 end
