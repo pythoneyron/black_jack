@@ -3,54 +3,66 @@ class Interface
   ADD_CARD = 2
   OPEN_CARDS = 3
 
-  def self.messages(value)
-    @messages[value]
+  class << self
+    def enter_your_name
+      print 'Введите своё имя: '
+    end
+
+    def list(item)
+      item.each { |k, v| puts "#{k} - #{v[:title]}" }
+    end
+
+    def continue_game
+      puts 'Любое введенное отличное значение от числа расценивается как выход из игры'
+      print 'Для продолжения игры введите 1 или 0 что бы выйти: '
+    end
+
+    def cards_and_count(user)
+      puts "Карты у '#{user.name}' - #{user.show_cards}"
+      puts "Количество баллов у '#{user.name}' - #{user.count_points}"
+    end
+
+    def repeat
+      puts 'Если хотить сыграть еще раз, введите 1 или любое значение что бы выйти:'
+      again = gets.chomp.to_i
+      again == 1
+    end
+
+    def back_cards(user)
+      puts "Карты у '#{user.name}' - #{user.show_back_cards}"
+    end
+
+    def space
+      puts "<------->\n\n"
+    end
+
+    def action
+      puts 'Введите действие : '
+    end
+
+    def skip
+      puts 'Вы пропустили ход'
+    end
+
+    def you_lose
+      puts 'Вы проиграли'
+    end
+
+    def win
+      puts 'Вы выграли'
+    end
+
+    def draw
+      puts 'Ничья'
+    end
+
+    def task(number)
+      task = {
+        1 => 'Пропустить',
+        2 => 'Добавить карту',
+        3 => 'Открыть карты'
+      }
+      task[number]
+    end
   end
-
-  @messages = {
-    enter_your_name: 'Введите своё имя: ',
-    continue_game: 'Для продолжения игры введите 1 или 0 что бы выйти: ',
-    warning_continue_game: 'Любое введенное отличное значение от числа расценивается как выход из игры',
-
-    your_cards: 'Ваши карты - ',
-    count_cards: 'Количество баллов - ',
-    back_cards: 'Карты дилера - ',
-
-    select_option: 'Выбирите нужный вариант',
-    skip: '1 - Пропустить',
-    add_card: '2 - Добавить карту',
-    open_card: '3 - Открыть карты',
-    your_option: 'Ваш вариант: '
-  }
-
-  def enter_your_name
-    print self.class.messages(:enter_your_name)
-  end
-
-  def continue_game
-    puts self.class.messages(:warning_continue_game)
-    print self.class.messages(:continue_game)
-  end
-
-  def cards_and_count(user)
-    puts self.class.messages(:your_cards) + user.show_cards.to_s
-    puts self.class.messages(:count_cards) + user.count_points.to_s
-  end
-
-  def back_cards(user)
-    puts self.class.messages(:back_cards) + user.show_back_cards.to_s
-  end
-
-  def space
-    puts "\n<------->\n\n"
-  end
-
-  def options
-    puts self.class.messages(:select_option)
-    puts self.class.messages(:skip)
-    puts self.class.messages(:add_card)
-    puts self.class.messages(:open_card)
-    print self.class.messages(:your_option)
-  end
-
 end

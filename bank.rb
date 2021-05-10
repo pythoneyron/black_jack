@@ -6,10 +6,14 @@ class Bank
     @bets = {}
   end
 
-  def bet_in_bank(player, bet)
+  def bet(player, bet)
     @bets[player.__id__] = 0
     @bets[player.__id__] += bet
 
     player.bank.money -= bet
+  end
+
+  def transaction(value)
+    @money += value.to_i
   end
 end

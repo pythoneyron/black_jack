@@ -1,5 +1,5 @@
 class Deck
-  COUNT_CARDS = 5
+  COUNT_CARDS = 52
 
   def initialize
   end
