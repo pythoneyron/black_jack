@@ -116,7 +116,7 @@ class Game
       dealer.bank.transaction(10)
     elsif (user_count > dealer_count) || (dealer_count > MAX_POINTS)
       Interface.say(:win)
-      user.bank.transaction(10)
+      user.bank.transaction(20)
     else
       Interface.say(:you_lose)
       dealer.bank.transaction(20)
